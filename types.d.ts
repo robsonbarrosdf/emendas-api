@@ -1,0 +1,1 @@
+declare module 'jsonix-lexml-teste22/dist/bundle/jsonix-lexml.es';
