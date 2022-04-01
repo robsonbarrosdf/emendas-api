@@ -9,3 +9,12 @@ export interface Proposicao {
   idSdlegDocumentoItemDigital: string;
   urlDownloadItemDigitalZip: string;
 }
+
+export interface Parlamentar {
+    id: string;
+    nome: string;
+    siglaPartido?: string;
+    siglaUF: string;
+    sexo: string;
+    siglaCasa: string;
+}

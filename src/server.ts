@@ -6,6 +6,8 @@ import {
   buscarProposicoes,
 } from "./services/proposicoesService";
 
+import { buscarParlamentares, buscarDeputados, buscarSenadores } from "./services/parlamentarService";
+
 const app = express();
 
 // middlewares
@@ -44,6 +46,21 @@ router.get("/proposicao/texto-lexml/json", async (req, res) => {
     Number(req.query.ano!)
   );
   res.json(jsonix);
+});
+
+router.get("/parlamentares/cd", async (req, res) => {
+    const parlamentares = await buscarDeputados();
+    res.json(parlamentares);
+});
+
+router.get("/parlamentares/sf", async (req, res) => {
+    const parlamentares = await buscarSenadores();
+    res.json(parlamentares);
+});
+
+router.get("/parlamentares", async (req, res) => {
+    const parlamentares = await buscarParlamentares();
+    res.json(parlamentares);
 });
 
 app.use(router);
