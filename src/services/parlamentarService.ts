@@ -1,25 +1,22 @@
 import Axios from "axios";
 import { Parlamentar } from "./types";
 
-const xml2js = require('xml2js');
-
 const baseURL = "https://legis.senado.gov.br/lexeditweb/resources/shared/parlamentares";
 const http = Axios.create({
   baseURL,
 });
 
 const _buscarParlamentares = async (siglaCasa: string): Promise<Parlamentar[]> => {
-    const res = await http.get<string>(siglaCasa.toUpperCase());
-    const objeto = await xml2js.parseStringPromise(res.data);
-    const parlamentares = objeto.parlamentares.parlamentar;
+    const res = await http.get(siglaCasa.toUpperCase(), { headers: { "Accept": "application/json" }});
+    const parlamentares = res.data.parlamentares;
 
     return parlamentares.map((obj: any) => ({
-        id: obj.codigoDeputado[0] || obj.codigoParlamentar[0],
-        nome: obj.nome[0],
-        siglaPartido: obj.siglaPartido[0],
-        siglaUF: obj.siglaUf[0],
-        sexo: obj.sexo[0],
-        siglaCasa: obj.siglaCasa[0],
+        id: obj.codigoDeputado || obj.codigoParlamentar,
+        nome: obj.nome,
+        siglaPartido: obj.siglaPartido,
+        siglaUF: obj.siglaUf,
+        sexo: obj.sexo,
+        siglaCasa: obj.siglaCasa,
     }));
 };
   
@@ -27,7 +24,4 @@ export const buscarDeputados = async (): Promise<Parlamentar[]> => _buscarParlam
 
 export const buscarSenadores = async (): Promise<Parlamentar[]> => _buscarParlamentares('SF');
 
-export const buscarParlamentares = async (siglaCasa?: string): Promise<Parlamentar[]> => {
-    const responses = await Promise.all([buscarDeputados(), buscarSenadores()]);
-    return [...responses[0], ...responses[1]];
-};
+export const buscarParlamentares = async (): Promise<Parlamentar[]> => _buscarParlamentares('/');
